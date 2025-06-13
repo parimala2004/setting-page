@@ -1,127 +1,211 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 
-class PinScreen extends StatefulWidget {
-  @override
-  _PinScreenState createState() => _PinScreenState();
-}
+List<IconData> iconpic = [
+  CupertinoIcons.lock,
+  Icons.notification_important_outlined,
+  CupertinoIcons.mail,
+  CupertinoIcons.question_circle,
+  Icons.block,
+];
 
-class _PinScreenState extends State<PinScreen> {
-  String pin = "";
-  final TextEditingController _pinController = TextEditingController();
+List<String> iconlist = [
+  "Change PIN",
+  "Notification and Email",
+  "Invite to Pay Synce",
+  "Privacy Policy",
+  "Deleted account",
+];
 
-  void onKeyboardTap(String value) {
-    if (pin.length < 4) {
-      setState(() {
-        pin += value;
-        _pinController.value = TextEditingValue(text: pin);
-      });
-    }
-  }
-
-  void onBackspace() {
-    if (pin.isNotEmpty) {
-      setState(() {
-        pin = pin.substring(0, pin.length - 1);
-        _pinController.value = TextEditingValue(text: pin);
-      });
-    }
-  }
+class WalletScreen extends StatelessWidget {
+  const WalletScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(CupertinoIcons.back,size: 28,),
-        backgroundColor: Colors.white,
+        leading: Icon(CupertinoIcons.back),
+        title: Text("Settings", style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold, color: Colors.black),),
       ),
-      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 60),
-            const Icon(CupertinoIcons.lock, size: 40),
-            const SizedBox(height: 20),
-            const Text(
-              "Enter your Pay Sync PIN",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 120),
-              child: PinCodeTextField(
-                readOnly: true,
-                length: 4,
-                animationType: AnimationType.fade,
-                controller: _pinController,
-                pinTheme: PinTheme(
-                  shape: PinCodeFieldShape.circle,
-                  fieldHeight: 30,
-                  fieldWidth: 25,
-                  activeColor: Colors.black,
-                  inactiveColor: Colors.grey,
-                  selectedColor: Colors.black,
+            Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 60.0),
+                  child: Container(
+                    height: 170,
+                    width: 320,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black12),
+                      borderRadius: BorderRadius.circular(13),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 60),
+                        Text("Katherine Smith", style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text("@Katherine1102", style: TextStyle(color: Colors.grey, fontSize: 13),),
+                        Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.verified, color: Colors.indigo.shade300, size: 15),
+                              SizedBox(width: 5),
+                              Text("account verified", style: TextStyle(color: Colors.indigo.shade300, fontWeight: FontWeight.bold,),),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                animationDuration: const Duration(milliseconds: 300),
-                backgroundColor: Colors.white,
-                appContext: context,
-                enabled: true,
-              ),
+                Positioned(
+                  child: CircleAvatar(
+                    radius: 60,
+                    backgroundImage: AssetImage("assets/images/image.jpg"),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 20),
             Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                itemCount: 12,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 1.3,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                ),
+              child: ListView.builder(
+                itemCount: iconlist.length,
                 itemBuilder: (context, index) {
-                  final List<String> keys = [
-                    '1', '2', '3',
-                    '4', '5', '6',
-                    '7', '8', '9',
-                    '', '0', '<'
-                  ];
-                  String key = keys[index];
-
-                  if (key == '') {
-                    return const SizedBox();
-                  } else if (key == '<') {
-                    return ElevatedButton(
-                      onPressed: onBackspace,
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(20),
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        elevation: 2,
+                  return Column(
+                    children: [
+                      ListTile(
+                        dense: true,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 0),
+                        leading: Icon(iconpic[index], color: index == 4 ? Colors.red : Colors.black,),
+                        title: index == 4
+                            ? GestureDetector(
+                          onTap: () {
+                            showWallet(context);
+                          },
+                          child: Text(iconlist[index], style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.red),),) : Text(iconlist[index],
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),),
+                        trailing: Icon(Icons.navigate_next, color: Colors.grey),
                       ),
-                      child: const Icon(Icons.backspace),
-                    );
-                  } else {
-                    return ElevatedButton(
-                      onPressed: () => onKeyboardTap(key),
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(20),
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        elevation: 2,
-                      ),
-                      child: Text(key, style: const TextStyle(fontSize: 20)),
-                    );
-                  }
+                      Divider(height: 10),
+                    ],
+                  );
                 },
               ),
             ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                children: [
+                  Text("Version 2.1.2(9)", style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)), Text("Released on February 04,2021", style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                  SizedBox(height: 5),
+                  Container(
+                    height: 8,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(13),
+                      color: Colors.black,
+                    ),
+                  )
+                ],
+              ),
+            )
           ],
         ),
       ),
     );
   }
+}
+
+class BottomSheetClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+
+    path.moveTo(0, 50);
+    path.quadraticBezierTo(size.width / 2, 0, size.width, 50);
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height); 
+    path.close(); 
+
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+void showWallet(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+   builder: (BuildContext context) {
+      return Stack(
+        children: [
+          Positioned(
+            bottom: 40,
+            left: 20,
+            right: 20,
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.topCenter,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 10,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Transfer your wallet cash before deleting account', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16,), textAlign: TextAlign.center,),
+                      SizedBox(height: 10),
+                      Text(
+                        'Transfer remaining money to your bank account', style: TextStyle(color: Colors.grey[600], fontSize: 14,),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 10),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
+                          shape: StadiumBorder(),
+                          minimumSize: Size(double.infinity, 48),
+                        ),
+                        child: Text('Transfer wallet balance',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text('Cancel', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 16),),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: -30,
+                  child: CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.blue,
+                    child: Icon(Icons.person, color: Colors.white, size: 30),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }
